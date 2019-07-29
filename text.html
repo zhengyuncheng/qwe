@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{margin:0;padding:0;}
+			header{width:50%;padding:10px;margin:0 auto;background:#333;margin-top: 30px;height: 25px;position: relative;}
+			header h1{float:left;font-size:20px;color:#fff;}
+			header input{float:right;width:200px;height:20px;}
+			section{width:50%;padding:10px;margin:0 auto;background:#ccc;}
+			.first,.last{overflow: hidden;}
+			section h2{font-size:20px;float:left;line-height: 50px;}
+			section span{width:20px;height:20px;float:right;background:#eee;border-radius:50%;margin-top: 20px;text-align: center;line-height: 20px;}
+			section ul{clear: both;}
+			section li{height:30px;background:#fff url(img/hei.png) no-repeat right center ;line-height: 30px;font-size:16px;list-style: none;border-radius:5px;border-left:5px solid cadetblue;padding: 0 10px;margin-bottom: 10px;background-size: 20px 20px;}
+			.last li{color:#333;background: #e6e6e6 url(img/hei2.png) no-repeat right center;background-size: 20px 20px;border-left:5px solid #b3b3b3;}
+			section input{margin-right: 10px;}
+			header li{width:202px;height:25px;background:#fff;list-style:none;line-height:25px;background:#eee;border-bottom: 1px solid #ccc;}
+			header ul{position: absolute;top:34px;left:447px;display:none;}
+			header li:hover{background:orangered;color: #fff;cursor:pointer;}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>ToDoList</h1>
+			<input type="text" placeholder="添加ToDo" id="int">
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</header>
+		<section>
+			<div class="first">
+				<h2>正在进行</h2>
+				<span>0</span>
+				<ul>
+					
+				</ul>
+			</div>
+			<div class="last">
+				<h2>已经完成</h2>
+				<span>0</span>
+				<ul>
+					
+				</ul>
+			</div>
+		</section>
+	</body>
+</html>
+<script src="jQuery.js"></script>
+<script>
+	$(function(){
+		let i=0;
+		$("#int").keypress(function(evt){
+			let e = evt || event;
+			let key = e.keyCode || e.which || e.charCode;
+			
+			if(key == 13){
+				let oLi = $("<li></li>");
+				oLi.html($("#int").val());
+				let ck = $("<input type='checkbox'>");
+				oLi.prepend(ck);
+				$(".first ul").append(oLi);
+				$(".first span").html($(".first li").length);
+				let date = new Date();
+				date.setDate(date.getDate()+7);
+				document.cookie=i+"="+$('#int').val()+";expires="+date;
+				i++;
+			}
+		});
+		
+		$(".first ul").click(function(evt){
+			let e = evt || event;
+			let target = e.target || e.srcElement;
+			let del = null;
+			if(target.tagName == "INPUT"){
+				 del = $(target).parent().remove();
+				$(".first span").html($(".first li").length);
+				$(".last ul").append(del);
+				$(".last span").html($(".last li").length);
+			}
+		});
+		$("h1").click(function(){
+			$(this).parent().nextAll().remove();
+		});
+		$("#int").focus(function(){
+			$("header ul").css({display:"block"});
+			for(let i=0; i<5; i++){
+				let cookie_value = [];
+				let strCookie = document.cookie;
+				let arrCookie = strCookie.split("; ");
+				for(let j=0; j<arrCookie.length; j++){
+					let arr = arrCookie[j].split("=");
+					cookie_value.push(arr[1]);
+				}
+				let index = Math.round(Math.random()*cookie_value.length-1);
+				$("header li")[i].innerHTML=cookie_value[index];
+			}
+			$("header ul").click(function(evt){
+				let e = evt || event;
+				let target = e.target || e.srcElement;
+				if(target.tagName == "LI"){
+					$("#int").val($(target).html())
+				}
+			})
+		});
+// 		$("#int").blur(function(){
+// 			$("header ul").css({display:"none"});
+// 		})
+		
+	});
+</script>
